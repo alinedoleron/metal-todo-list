@@ -8,7 +8,7 @@
 
 	<div class="container todo-list">
 		<br/>
-
+		
 		<h3>Metal TODO List</h3>
 
 		<div class="row">
@@ -16,9 +16,17 @@
 				{call .createTask /}
 			</div>
 		</div>
-
 		<div class="row">
 			<div class="col-sm-12">
+				<ul class="nav nav-tabs" id="myTab" role="tablist">
+					<li class="nav-item">
+						<a class="nav-link active" data-toggle="tab" href="#active" role="tab">Active tasks</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" data-toggle="tab" href="#archived" role="tab">Archived tasks</a>
+					</li>
+				</ul>
+				
 				{call .listTasks}
 					{param tasks: $tasks /}
 				{/call}
@@ -36,22 +44,68 @@
 
 {template .listTasks}
 	{@param tasks: ?}
-
-	<div class="list-group">
+	<div class="tab-content">
+		<div class="tab-pane active" id="active" role="tabpanel">
 		{foreach $task in $tasks}
-			<a class="list-group-item list-group-item-action {$task.done? 'done' : ''}"
-				data-index="{index($task)}"
-				data-onclick="handleCheckTask_"
-				href="#">
-
-				<div class="d-flex justify-content-between w-100">
-					<span class="description">
-						{$task.description}
-					</span>
-					<span aria-hidden="true"
-						data-onclick="handleRemoveTask_">&times;</span>
-				</div>
-			</a>
+			{if $task.archived=='visible'}
+			{let $taskId: index($task)/}
+					{call .listTask}
+						{param taskId: $taskId /}
+						{param task: $task /}
+					{/call}
+				{/if}
 		{/foreach}
+		</div>
+		<div class="tab-pane" id="archived" role="tabpanel">
+		{foreach $task in $tasks}
+			{if $task.archived=='hidden'}
+			{let $taskId: index($task)/}
+				{call .listTask}
+					{param taskId: $taskId /}
+					{param task: $task /}
+				{/call}
+			{/if}
+		{/foreach}
+		</div>
+	</div>
+	
+{/template}
+
+{template .listTask}
+	{@param task: ?}
+	{@param taskId: ?}
+	<button type="button" data-toggle="modal" data-target="#exampleModal"
+		class="btn list-group-item list-group-item-action {$task.done? 'done' : ''}">
+		<div class="d-flex justify-content-between w-100" >
+			<span class="description" data-index="{$taskId}">
+				{$task.description}
+			</span>
+			<span aria-hidden="true" data-index="{$taskId}"
+				data-onclick="handleRemoveTask_">&times;
+			</span>
+		</div>
+	</button>
+
+	<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+		<div class="modal-content">
+		<div class="modal-header">
+			<h5 class="modal-title" id="exampleModalLabel">EDIT TASK</h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			<span aria-hidden="true">&times;</span>
+			</button>
+		</div>
+		<div class="modal-body">
+			<input type="text" class="form-control" value={$task.description}>
+		</div>
+		<div class="modal-footer">
+			<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			<button type="button" class="btn btn-primary">Save changes</button>
+		</div>
+		</div>
+		</div>
 	</div>
 {/template}
+
+
+

@@ -10,19 +10,23 @@ class TodoList extends Component {
 	handleAddTask_(event) {
 		let newTask = {
 			description: event.target.value,
-			done: false
+			done: false,
+			archived: "visible"
 		}
 
 		this.setState({tasks: this.tasks.concat(newTask)});
+		console.log(this.tasks);	
 
 		event.target.value = "";
 	}
 
 	handleCheckTask_(event) {
 		let index = event.delegateTarget.getAttribute("data-index");
+		console.log(event.delegateTarget);
 		let tempTask = {
 			description: this.tasks[index].description,
-			done: !this.tasks[index].done
+			done: !this.tasks[index].done,
+			archived: this.tasks[index].archived
 		}
 
 		this.tasks.splice(index, 1, tempTask);
@@ -31,33 +35,44 @@ class TodoList extends Component {
 
 	handleRemoveTask_(event) {
 		let index = event.target.getAttribute("data-index");
+		let visibility;
+		console.log(event.target);
+		if (this.tasks[index].archived == "hidden") {
+			visibility = "visible";
+		} else {
+			visibility = "hidden"
+		}
+		let tempTask = {
+			description: this.tasks[index].description,
+			done: this.tasks[index].done,
+			archived: visibility
+		}
 
-		this.tasks.splice(index, 1);
+		this.tasks.splice(index, 1, tempTask);
 		this.setState({tasks: this.tasks});
+		console.log(this.tasks);
+
 	}
+
 }
 
 
 TodoList.STATE = {
 	tasks: {
 		value: [
-			{
-				description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer auctor sollicitudin enim vitae imperdiet. Morbi et faucibus purus, at gravida justo. Proin in nisi molestie, consectetur mi a, eleifend augue. Sed mollis libero at fermentum hendrerit.',
-				done: false
-			},
-			{
-				description: 'Cras pharetra sodales lorem, ac euismod felis consectetur ac. Pellentesque tempus sapien mauris, ut pharetra lacus porta in.',
-				done: true
-			},
-			{
-				description: 'Ut diam enim, mollis id facilisis vel, pulvinar interdum elit.',
-				done: false
-			}
-		]
+		{
+			description: "Aline",
+			done: false,
+			archived: "visible"
+		},
+		{
+			description: "Lianne",
+			done: false,
+			archived: "hidden"
+		},
+	]
 	},
-	removedTasks: {
-		value: []
-	}
+	
 }
 
 Soy.register(TodoList, templates);
