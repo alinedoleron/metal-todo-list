@@ -5,6 +5,7 @@
  */
 {template .render}
 	{@param tasks: ?}
+	{@param tabSelected: ?}
 
 	<div class="container todo-list">
 		<br/>
@@ -18,17 +19,18 @@
 		</div>
 		<div class="row">
 			<div class="col-sm-12">
-				<ul class="nav nav-tabs" id="myTab" role="tablist">
+				<ul class="nav nav-tabs" id="myTab" role="tablist" data-onclick="chooseTab_">
 					<li class="nav-item">
-						<a class="nav-link active" data-toggle="tab" href="#active" role="tab">Active tasks</a>
+						<a class="nav-link active" data-tab="active" data-toggle="tab" href="#active" role="tab">Active tasks</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" data-toggle="tab" href="#archived" role="tab">Archived tasks</a>
+						<a class="nav-link" data-tab="archived" data-toggle="tab" href="#archived" role="tab">Archived tasks</a>
 					</li>
 				</ul>
 				
 				{call .listTasks}
 					{param tasks: $tasks /}
+					{param tabId: $tabSelected /}
 				{/call}
 			</div>
 		</div>
@@ -44,8 +46,9 @@
 
 {template .listTasks}
 	{@param tasks: ?}
+	{@param tabId: ?}
 	<div class="tab-content">
-		<div class="tab-pane active" id="active" role="tabpanel">
+		<div class="tab-pane {if ($tabId == 'active') or ($tabId == '')}active visible{else}hidden{/if}" id="active" role="tabpanel">
 		{foreach $task in $tasks}
 			{if $task.archived=='visible'}
 			{let $taskId: index($task)/}
@@ -56,7 +59,7 @@
 				{/if}
 		{/foreach}
 		</div>
-		<div class="tab-pane" id="archived" role="tabpanel">
+		<div class="tab-pane {if $tabId == 'archived'}active visible{else}hidden{/if}" id="archived" role="tabpanel">
 		{foreach $task in $tasks}
 			{if $task.archived=='hidden'}
 			{let $taskId: index($task)/}

@@ -15,14 +15,12 @@ class TodoList extends Component {
 		}
 
 		this.setState({tasks: this.tasks.concat(newTask)});
-		console.log(this.tasks);	
 
 		event.target.value = "";
 	}
 
 	handleCheckTask_(event) {
 		let index = event.delegateTarget.getAttribute("data-index");
-		console.log(event.delegateTarget);
 		let tempTask = {
 			description: this.tasks[index].description,
 			done: !this.tasks[index].done,
@@ -36,7 +34,6 @@ class TodoList extends Component {
 	handleRemoveTask_(event) {
 		let index = event.target.getAttribute("data-index");
 		let visibility;
-		console.log(event.target);
 		if (this.tasks[index].archived == "hidden") {
 			visibility = "visible";
 		} else {
@@ -50,8 +47,12 @@ class TodoList extends Component {
 
 		this.tasks.splice(index, 1, tempTask);
 		this.setState({tasks: this.tasks});
-		console.log(this.tasks);
 
+	}
+
+	chooseTab_(event) {
+		let tabId = event.target.getAttribute("data-tab");
+		this.setState({tabSelected: tabId.toString()});
 	}
 
 }
@@ -72,6 +73,10 @@ TodoList.STATE = {
 		},
 	]
 	},
+
+	tabSelected: {
+		value: ""
+	}
 	
 }
 
